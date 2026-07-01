@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 
-from controllers import figurinhas_bp
+from controllers import figurinhas_bp, api_v1_bp
 from dados_iniciais import popular_dados
 from models import db
 
@@ -15,13 +15,18 @@ def criar_app():
     )
 
     pasta = os.path.abspath(os.path.dirname(__file__))
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
-        pasta, "figurinhas.db"
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        "sqlite:///" + os.path.join(pasta, "figurinhas.db")
     )
+
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
+
+    # Blueprints
     app.register_blueprint(figurinhas_bp)
+    app.register_blueprint(api_v1_bp)
 
     with app.app_context():
         db.create_all()
